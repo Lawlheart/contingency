@@ -8,7 +8,7 @@ interface LoadMoreProps {
 
 function LoadMore({pokedex, dexLimit, loadPage}: LoadMoreProps) {
   return (
-    <div className="m-4 ">
+    <div className="my-4">
       {Object.keys(pokedex).length < dexLimit && <button onClick={() => loadPage('more')} className="more p-2 bg-red-950 border-4 border-white max-w-40 self-center hover:scale-110">
         Load More&nbsp;
         {Math.round(Object.keys(pokedex).length / dexLimit * 100)}%

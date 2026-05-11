@@ -17,16 +17,16 @@ function TypeFilter({typeFilter, setTypeFilter}: TypeFilterProps) {
         ></PokemonCardIcon>
         <button onClick={() => setTypeFilter('')} className="p-2 bg-red-950 border-4 border-white max-w-40 self-center hover:scale-110">Clear</button>
       </div>}
-      {pokeTypes.map(({name}) => name).map((typeName) => (
-        
-        <button onClick={() => setTypeFilter(typeName)} key={typeName}>
-          <PokemonCardIcon
-            typeName={typeName}
-            active={typeName === typeFilter}
-          ></PokemonCardIcon>
-
-        </button>
-      ))}
+      <div className="types flex flex-wrap gap-1">
+        {pokeTypes.map(({name}) => name).map((typeName) => (
+          <button onClick={() => setTypeFilter(typeName)} key={typeName}>
+            <PokemonCardIcon
+              typeName={typeName}
+              active={typeName === typeFilter}
+            ></PokemonCardIcon>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

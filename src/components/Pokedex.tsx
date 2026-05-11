@@ -35,21 +35,20 @@ function Pokedex() {
   return (
     <PokedexContext.Provider value={pokedex}>
       <h1>Pokedex ({Object.keys(pokedex).length})</h1>
-      <div className="settings">
+      <div className="settings flex justify-center gap-4">
         <button
           className="p-2 bg-red-950 border-4 border-white max-w-40 self-center hover:scale-110"
           onClick={() => {
             setPaginated(!paginated)
             loadPage('first')
           }}>Pagination: {paginated ? 'On' : 'Off'}</button>
+          {!paginated && <LoadMore dexLimit={dexLimit} pokedex={pokedex} loadPage={loadPage} ></LoadMore>}
+          <SearchFilter searchFilter={searchFilter} onSearchFilter={(newSearch) => setSearchFilter(newSearch)}></SearchFilter>
       </div>
       <TypeFilter typeFilter={typeFilter} setTypeFilter={setTypeFilter}></TypeFilter>
-      <SearchFilter searchFilter={searchFilter} onSearchFilter={(newSearch) => setSearchFilter(newSearch)}></SearchFilter>
       
-      {paginated ?
-        <PokemonPagination page={page} lastPage={lastPage} loadPage={loadPage}></PokemonPagination> :
-        <LoadMore dexLimit={dexLimit} pokedex={pokedex} loadPage={loadPage} ></LoadMore>
-      }
+      
+      {paginated && <PokemonPagination page={page} lastPage={lastPage} loadPage={loadPage}></PokemonPagination>}
       <div className="flex flex-wrap p-4 gap-4 justify-center">
         {pagePokedex.map(pokemon => !!pokemon && (
           <PokemonCard pokemon={pokemon} key={pokemon.name} />
