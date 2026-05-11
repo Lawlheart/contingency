@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Pokedex, PokemonDetail, PokemonListItem, PokemonPagination } from "../types";
 
 import { tursoConnection } from '../helpers/turso'
+import { POKEAPI_CONFIG } from "../config/pokeapi";
 
 export function usePokedex() {
   const [pokedex, setPokedex] = useState<Pokedex>({})
@@ -64,7 +65,7 @@ export function usePokedex() {
 
   // Queries POKEAPI for pokemon list, paginated
   const fetchPokemon = async (page=1): Promise<PokemonPagination> => {
-    const request = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=2000&offset=${(page - 1) * 20}`)
+    const request = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=${POKEAPI_CONFIG.pageSize}&offset=${(page - 1) * POKEAPI_CONFIG.pageSize}`)
     const response: PokemonPagination = await request.json()
 
     savePokedex(response, page)
@@ -121,7 +122,7 @@ export function usePokedex() {
       console.log('LOADED CACHED PAGE ', page)
       pokedexResults = cached.results
     }
-    await pokedexResults.forEach(async (pokedexEntry) => {
+    await pokedexResults.filter(({name}) => !pokedex[name]).forEach(async (pokedexEntry) => {
       await loadPokemonDetail(pokedexEntry)
     })
     console.log(pokedexResults)
@@ -132,16 +133,31 @@ export function usePokedex() {
   }
 
   // For pagination
-  const loadPage = async (direction: 'previous' | 'next') => {
-    const lastPage = Math.ceil((pagination?.count || 1350) / 20) // 1350 is last pokemon as of 5/10/26
+  const loadPage = async (direction: 'previous' | 'next' | 'first' | 'last' | 'more') => {
+    const lastPage = Math.ceil((pagination?.count || POKEAPI_CONFIG.dexLimit) / POKEAPI_CONFIG.pageSize)
+    let newPage = 1
 
-    if (direction === 'previous' && page > 1) {
-      setPage(page - 1)
-      await loadPokedex(page - 1)
-    } else if (direction === 'next' && page < lastPage) {
-      setPage(page + 1)
-      await loadPokedex(page + 1)
+    switch (direction) {
+      case 'previous':
+        newPage = page - 1;
+        break;
+      case 'next':
+        newPage = page + 1;
+        break;
+      case 'last':
+        newPage = lastPage;
+        break;
+      case 'more':
+        newPage = Math.ceil(Object.keys(pokedex).length / POKEAPI_CONFIG.pageSize) + 1
+        break;
+      case 'first':
+      default:
+        newPage = 1;
+        break;
     }
+
+    setPage(newPage)
+    await loadPokedex(newPage)
   }
 
   return {
