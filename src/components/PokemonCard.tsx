@@ -6,10 +6,9 @@ interface PokemonCardProps {
 } 
 
 function PokemonCard({pokemon: { name }}: PokemonCardProps) {
-
   return (
     <>
-      <h1>{name}</h1>
+      <h2 className="text-base">{name}</h2>
     </>
   )
 }
