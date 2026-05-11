@@ -10,7 +10,7 @@ import LoadMore from "./LoadMore"
 
 
 function Pokedex() {
-  const { loadPokedex, pokedexPage, page, loadPage, pagination, pokedex, typeFilter, setTypeFilter, searchFilter, setSearchFilter } = usePokedex()
+  const { loadPokedex, pokedexPage, page, loadPage, pokedex, typeFilter, setTypeFilter, searchFilter, setSearchFilter } = usePokedex()
   const [paginated, setPaginated] = useState(true)
 
   useEffect(() => {

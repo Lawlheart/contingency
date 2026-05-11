@@ -35,8 +35,10 @@ export function usePokedex() {
       `);
       const pokedexes = await cachedPokedex.all();
       return JSON.parse(pokedexes[0].contents)
-    } catch (e: {code: string, message: string}) {
-      if (e?.code === "SQLITE_UNKNOWN" && e?.message.includes("no such table")) {
+    } catch (e) {
+      if (
+        (e as {code: string, message: string})?.code === "SQLITE_UNKNOWN" &&
+        (e as {code: string, message: string})?.message.includes("no such table")) {
         console.log("No Table Found")
         return initializePokedex()
       }
