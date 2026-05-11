@@ -16,7 +16,7 @@ function PokemonCard({pokemon: { name }}: PokemonCardProps) {
 
   return (
     <div className="p-4 w-42 flex flex-col justify-center items-center bg-red-950">
-      <h2 className="text-base capitalize">{name}</h2>
+      <h2 className="text-base capitalize">{detail?.id}. {name}</h2>
       <div className="text-base text-bold">
         {detail?.abilities?.map((ability) => (
           <div key={ability.ability.name} className="capitalize">{ability.ability.name.replace('-', ' ')}</div>

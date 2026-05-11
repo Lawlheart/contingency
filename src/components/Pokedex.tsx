@@ -17,7 +17,8 @@ function Pokedex() {
   }, [])
 
   const dexLimit = pagination?.count || POKEAPI_CONFIG.dexLimit
-  const lastPage = Math.ceil(dexLimit / 20)
+  const lastPage = Math.ceil(dexLimit / POKEAPI_CONFIG.pageSize)
+  console.log(lastPage)
 
   return (
     <PokedexContext.Provider value={pokedex}>
