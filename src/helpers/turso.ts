@@ -19,3 +19,5 @@ export const loadTurso = async () => {
 
   checkCache()
 }
+
+loadTurso()
