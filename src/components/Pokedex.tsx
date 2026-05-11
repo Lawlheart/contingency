@@ -34,16 +34,19 @@ function Pokedex() {
         {page < lastPage && <button onClick={() => loadPage('next')} className="next p-2">Next &rarr;</button>}
         {page < lastPage && <button onClick={() => loadPage('last')} className="last p-2">Last</button>}
       </div> : <div>
-        {Object.keys(pokedex).length < dexLimit && <button onClick={() => loadPage('more')} className="more p-2">Load More</button>}
+        {Object.keys(pokedex).length < dexLimit && <button onClick={() => loadPage('more')} className="more p-2">
+          Load More&nbsp;
+          {Math.round(Object.keys(pokedex).length / dexLimit * 100)}%
+          </button>}
       </div>}
       <div className="flex flex-wrap p-4 gap-4 justify-center">
         {(paginated ? pokedexPage : Object.keys(pokedex).map(key => pokedex[key])).map(pokemon => (
           <PokemonCard pokemon={pokemon} key={pokemon.name} />
         ))}
       </div>
-      <div>
+      {!paginated && <div>
         {Object.keys(pokedex).length < dexLimit && <button onClick={() => loadPage('more')} className="more p-2">Load More</button>}
-      </div>
+      </div>}
     </PokedexContext.Provider>
   )
 }
