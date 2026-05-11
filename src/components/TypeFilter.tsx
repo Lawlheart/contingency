@@ -15,7 +15,7 @@ function TypeFilter({typeFilter, setTypeFilter}: TypeFilterProps) {
           key={typeFilter}
           typeName={typeFilter}
         ></PokemonCardIcon>
-        <button onClick={() => setTypeFilter('')} className="p-2 hover:scale-110">Clear</button>
+        <button onClick={() => setTypeFilter('')} className="p-2 bg-red-950 border-4 border-white max-w-40 self-center hover:scale-110">Clear</button>
       </div>}
       {pokeTypes.map(({name}) => name).map((typeName) => (
         

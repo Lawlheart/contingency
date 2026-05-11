@@ -36,10 +36,12 @@ function Pokedex() {
     <PokedexContext.Provider value={pokedex}>
       <h1>Pokedex ({Object.keys(pokedex).length})</h1>
       <div className="settings">
-        <button onClick={() => {
-          setPaginated(!paginated)
-          loadPage('first')
-        }}>Pagination: {paginated ? 'On' : 'Off'}</button>
+        <button
+          className="p-2 bg-red-950 border-4 border-white max-w-40 self-center hover:scale-110"
+          onClick={() => {
+            setPaginated(!paginated)
+            loadPage('first')
+          }}>Pagination: {paginated ? 'On' : 'Off'}</button>
       </div>
       <TypeFilter typeFilter={typeFilter} setTypeFilter={setTypeFilter}></TypeFilter>
       <SearchFilter searchFilter={searchFilter} onSearchFilter={(newSearch) => setSearchFilter(newSearch)}></SearchFilter>

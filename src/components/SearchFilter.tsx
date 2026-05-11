@@ -5,7 +5,7 @@ interface SearchFilterProps {
 
 function SearchFilter({onSearchFilter}: SearchFilterProps) {
   return (
-    <div className="type-filter flex flex-wrap gap-4 p-4 justify-center bg-red-950 text-white max-w-96 self-center">
+    <div className="type-filter flex flex-wrap gap-4 p-4 justify-center bg-red-950 text-white max-w-96 self-center border-4 border-white">
       <label className="text-white text-xl text-bold">
         Search: <input type="text" name="searchFilter" className="text-bold" onChange={(e) => onSearchFilter(e.target.value)} />
       </label>
