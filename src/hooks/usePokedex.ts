@@ -10,6 +10,7 @@ export function usePokedex() {
   const [pagination, setPagination] = useState<PokemonPagination>()
   const [page, setPage] = useState<number>(1)
   const [typeFilter, setTypeFilter] = useState('')
+  const [searchFilter, setSearchFilter] = useState('')
 
   // creates pokedexp page database table with Turso
   const initializePokedex = async (): Promise<PokemonPagination> => {
@@ -138,7 +139,7 @@ export function usePokedex() {
   }
 
   // For pagination
-  const loadPage = async (direction: 'previous' | 'next' | 'first' | 'last' | 'more') => {
+  const loadPage = async (direction: string) => {
     const lastPage = Math.ceil((pagination?.count || POKEAPI_CONFIG.dexLimit) / POKEAPI_CONFIG.pageSize)
     let newPage
 
@@ -174,5 +175,7 @@ export function usePokedex() {
     pokedex,
     typeFilter,
     setTypeFilter,
+    searchFilter,
+    setSearchFilter,
   }
 }

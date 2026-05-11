@@ -4,10 +4,13 @@ import PokemonCard from "./PokemonCard"
 import { PokedexContext } from "../context/pokedexContext"
 import { POKEAPI_CONFIG } from "../config/pokeapi"
 import TypeFilter from "./TypeFilter"
+import SearchFilter from "./SearchFilter"
+import PokemonPagination from "./PokemonPagination"
+import LoadMore from "./LoadMore"
 
 
 function Pokedex() {
-  const { loadPokedex, pokedexPage, page, loadPage, pagination, pokedex, typeFilter, setTypeFilter } = usePokedex()
+  const { loadPokedex, pokedexPage, page, loadPage, pagination, pokedex, typeFilter, setTypeFilter, searchFilter, setSearchFilter } = usePokedex()
   const [paginated, setPaginated] = useState(true)
 
   useEffect(() => {
@@ -24,6 +27,9 @@ function Pokedex() {
   let pagePokedex = pagePokemonNames.map(key => pokedex[key])
   if (typeFilter !== '') {
     pagePokedex = pagePokedex.filter(({types}) => types?.map(({type}) => type?.name).includes(typeFilter))
+  } 
+  if (searchFilter !== '') {
+    pagePokedex = pagePokedex.filter(({name}) => name.includes(searchFilter))
   }
 
   return (
@@ -36,29 +42,20 @@ function Pokedex() {
         }}>Pagination: {paginated ? 'On' : 'Off'}</button>
       </div>
       <TypeFilter typeFilter={typeFilter} setTypeFilter={setTypeFilter}></TypeFilter>
+      <SearchFilter searchFilter={searchFilter} onSearchFilter={(newSearch) => setSearchFilter(newSearch)}></SearchFilter>
       
-      {paginated ? <div>
-        {page !== 1 && <button onClick={() => loadPage('first')} className="first p-2 hover:scale-110">First</button>}
-        {page > 1 && <button onClick={() => loadPage('previous')} className="prev p-2 hover:scale-110">&larr; Prev</button>}
-        {page < lastPage && <button onClick={() => loadPage('next')} className="next p-2 hover:scale-110">Next &rarr;</button>}
-        {page < lastPage && <button onClick={() => loadPage('last')} className="last p-2 hover:scale-110">Last</button>}
-      </div> : <div>
-        {Object.keys(pokedex).length < dexLimit && <button onClick={() => loadPage('more')} className="more p-2">
-          Load More&nbsp;
-          {Math.round(Object.keys(pokedex).length / dexLimit * 100)}%
-          </button>}
-      </div>}
+      {paginated ?
+        <PokemonPagination page={page} lastPage={lastPage} loadPage={loadPage}></PokemonPagination> :
+        <LoadMore dexLimit={dexLimit} pokedex={pokedex} loadPage={loadPage} ></LoadMore>
+      }
       <div className="flex flex-wrap p-4 gap-4 justify-center">
         {pagePokedex.map(pokemon => !!pokemon && (
           <PokemonCard pokemon={pokemon} key={pokemon.name} />
         ))}
       </div>
-      {!paginated && <div>
-        {Object.keys(pokedex).length < dexLimit && <button onClick={() => loadPage('more')} className="more p-2">
-          Load More&nbsp;
-          {Math.round(Object.keys(pokedex).length / dexLimit * 100)}%
-          </button>}
-      </div>}
+      {!paginated &&
+        <LoadMore dexLimit={dexLimit} pokedex={pokedex} loadPage={loadPage} ></LoadMore>
+      }
     </PokedexContext.Provider>
   )
 }
