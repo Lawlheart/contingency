@@ -53,6 +53,24 @@ function Pokedex() {
         {pagePokedex.map(pokemon => !!pokemon && (
           <PokemonCard pokemon={pokemon} key={pokemon.name} />
         ))}
+        {pagePokedex.length === 0 &&
+          <div className="m-2 p-2 bg-red-950 text-white max-w-96 self-center border-4 border-white">
+            {paginated ?
+              <div className="message">
+                No pokemon found on page {page}
+              </div> :
+              <div>
+                No pokemon found on in pokedex, {Object.keys(pokedex).length} Pokemon in memory.
+              </div>
+            }
+            <div>
+              Active Filters:
+              {typeFilter && <div>TypeFilter: {typeFilter}</div>}
+              {searchFilter && <div>searchFilter: {searchFilter}</div>}
+            </div>
+
+          </div>
+        }
       </div>
       {!paginated &&
         <LoadMore dexLimit={dexLimit} pokedex={pokedex} loadPage={loadPage} ></LoadMore>
