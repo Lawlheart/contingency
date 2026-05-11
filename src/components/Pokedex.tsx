@@ -23,7 +23,7 @@ function Pokedex() {
 
   let pagePokedex = pagePokemonNames.map(key => pokedex[key])
   if (typeFilter !== '') {
-    pagePokedex = pagePokedex.filter(({types}) => types.map(({type}) => type.name).includes(typeFilter))
+    pagePokedex = pagePokedex.filter(({types}) => types?.map(({type}) => type?.name).includes(typeFilter))
   }
 
   return (

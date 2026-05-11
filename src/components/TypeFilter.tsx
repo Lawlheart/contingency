@@ -1,9 +1,10 @@
+import type { Dispatch, SetStateAction } from "react";
 import { pokeTypes } from "../helpers/pokemonTypes"
 import PokemonCardIcon from "./PokemonTypeIcon"
 
 interface TypeFilterProps {
   typeFilter: string;
-  setTypeFilter: (typeName: string) => null
+  setTypeFilter: Dispatch<SetStateAction<string>>
 }
 
 function TypeFilter({typeFilter, setTypeFilter}: TypeFilterProps) {
