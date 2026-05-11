@@ -128,6 +128,10 @@ export function usePokedex() {
       console.log('LOADED CACHED PAGE ', page)
       pokedexResults = cached.results
     }
+    pokedexResults = pokedexResults.filter(({url}) => {
+      const id = url.split('/')[6]
+      return +id <= POKEAPI_CONFIG.dexLimit
+    })
     await pokedexResults.filter(({name}) => !pokedex[name]).forEach(async (pokedexEntry) => {
       await loadPokemonDetail(pokedexEntry)
     })
@@ -140,7 +144,6 @@ export function usePokedex() {
 
   // For pagination
   const loadPage = async (direction: string) => {
-    const lastPage = Math.ceil((pagination?.count || POKEAPI_CONFIG.dexLimit) / POKEAPI_CONFIG.pageSize)
     let newPage
 
     switch (direction) {
@@ -151,7 +154,7 @@ export function usePokedex() {
         newPage = page + 1;
         break;
       case 'last':
-        newPage = lastPage;
+        newPage = POKEAPI_CONFIG.lastPage;
         break;
       case 'more':
         newPage = Math.ceil(Object.keys(pokedex).length / POKEAPI_CONFIG.pageSize) + 1

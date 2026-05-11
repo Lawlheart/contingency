@@ -20,8 +20,7 @@ function Pokedex() {
     load()
   }, [])
 
-  const dexLimit = pagination?.count || POKEAPI_CONFIG.dexLimit
-  const lastPage = Math.ceil(dexLimit / POKEAPI_CONFIG.pageSize)
+  const {dexLimit, lastPage } = POKEAPI_CONFIG
   const pagePokemonNames = paginated ? pokedexPage.map(({name}) => name) : Object.keys(pokedex)
 
   let pagePokedex = pagePokemonNames.map(key => pokedex[key])
