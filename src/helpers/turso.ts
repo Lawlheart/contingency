@@ -11,13 +11,21 @@ export const tursoConnection = conn
 
 export const loadTurso = async () => {
   const checkCache = async () => {
+    const pokedexDBSetup = await conn.prepare(`
+      CREATE TABLE IF NOT EXISTS pokedex (page STRING, contents STRING);
+    `);
+    const pokedex = await pokedexDBSetup.all();
 
-    const stmt = await conn.prepare("SELECT * FROM pokedex");
-    const pokemon = await stmt.all();
-    console.log(pokemon);
+    const pokemonDBSetup = await conn.prepare(`
+      CREATE TABLE IF NOT EXISTS pokemon (species STRING, detail STRING);
+    `);
+    
+    const pokemon = await pokemonDBSetup.all();
+    return {
+      pokedex,
+      pokemon,
+    }
   }
 
-  checkCache()
+  return checkCache()
 }
-
-loadTurso()

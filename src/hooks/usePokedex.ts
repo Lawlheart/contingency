@@ -15,6 +15,11 @@ export function usePokedex() {
       CREATE TABLE IF NOT EXISTS pokedex (page STRING, contents STRING);
     `);
     const pokemon = await cachedPokedex.all();
+    
+    const pokemonDBSetup = await tursoConnection.prepare(`
+      CREATE TABLE IF NOT EXISTS pokemon (species STRING, detail STRING);
+    `);
+    await pokemonDBSetup.all();
     return pokemon[0]
   }
 
@@ -46,9 +51,20 @@ export function usePokedex() {
     return saved
   }
 
+  // Saves pokedex page to database with Turso
+  const savePokemon = async (pokemon: PokemonDetail) => {
+    const query = `
+      INSERT INTO pokemon (species, detail) VALUES ('${pokemon.name}', '${JSON.stringify(pokemon)}');
+    `
+    const savedPokemon = await tursoConnection.prepare(query)
+    const saved: PokemonPagination[] = await savedPokemon.all()
+    console.log('SAVED POKEMON ', pokemon.name)
+    return saved
+  }
+
   // Queries POKEAPI for pokemon list, paginated
   const fetchPokemon = async (page=1): Promise<PokemonPagination> => {
-    const request = await fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${(page - 1) * 20}`)
+    const request = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=2000&offset=${(page - 1) * 20}`)
     const response: PokemonPagination = await request.json()
 
     savePokedex(response, page)
@@ -56,22 +72,38 @@ export function usePokedex() {
     return response
   }
 
-  const loadPokemonDetail = async (url: string) => {
-    const request = await fetch(url)
-    const { id, name, stats, types, sprites } = await request.json()
+  const loadPokemonDetail = async ({ name, url}: PokemonListItem) => {
+    let loadedPokemon: PokemonDetail;
+    try {
+      const cachedPokemon = await tursoConnection.prepare(`
+        SELECT * FROM pokemon WHERE species='${name}';  
+      `);
+      const pokemon: {species: string, detail: string}[] = await cachedPokemon.all();
+      loadedPokemon = JSON.parse(pokemon[0].detail)
+    } catch(e) {
+      console.error(e)
+      console.log("Pokemon detail not cached, attempting to save")
 
-    const newPokemonDetail: PokemonDetail = {
-      id,
-      name,
-      stats,
-      types,
-      sprites,
-      url,
+      const request = await fetch(url)
+      const { id, name, stats, types, sprites, abilities } = await request.json()
+
+      const newPokemonDetail: PokemonDetail = {
+        id,
+        name,
+        stats,
+        types,
+        sprites,
+        url,
+        abilities,
+      }
+      console.log(newPokemonDetail)
+      await savePokemon(newPokemonDetail)
+
+      loadedPokemon = newPokemonDetail
     }
-
     setPokedex((pokedex) => ({
       ...pokedex,
-      [name]: newPokemonDetail
+      [name]: loadedPokemon
     }))
   }
 
@@ -85,15 +117,14 @@ export function usePokedex() {
     if(!cached || !cached?.results) {
       const fetchedPokemon = await fetchPokemon(page)
       pokedexResults = fetchedPokemon.results
-
     } else {
       console.log('LOADED CACHED PAGE ', page)
       pokedexResults = cached.results
     }
-    await pokedexResults.forEach(async ({url}) => {
-      await loadPokemonDetail(url)
+    await pokedexResults.forEach(async (pokedexEntry) => {
+      await loadPokemonDetail(pokedexEntry)
     })
-    console.log(pokedex)
+    console.log(pokedexResults)
 
     setPokedexPage(pokedexResults)
     setPagination(cached)

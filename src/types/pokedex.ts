@@ -3,6 +3,12 @@ export interface PokemonListItem {
   url: string;
 }
 
+export interface PokemonType {
+  id?: number
+  name: string
+  color?: string
+}
+
 export interface PokemonDetail extends PokemonListItem {
   id: number;
   stats: {
@@ -29,7 +35,15 @@ export interface PokemonDetail extends PokemonListItem {
     front_female: string;
     front_shiny: string;
     front_shiny_female: string;
-  }
+  },
+  abilities: {
+    ability: {
+      name: string;
+      url: string;
+    }
+    is_hidden: boolean;
+    slot: number;
+  }[]
 }
 
 export interface Pokedex {

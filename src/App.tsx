@@ -1,8 +1,18 @@
+import { useEffect } from 'react'
 import './App.css'
 import Pokedex from './components/Pokedex'
-import './helpers/turso'
+import {loadTurso } from './helpers/turso'
+
 
 function App() {
+
+  useEffect(() => {
+    async function runLoadTurso() {
+      loadTurso()
+    }
+
+    runLoadTurso()
+  }, [])
 
   return (
     <Pokedex />
