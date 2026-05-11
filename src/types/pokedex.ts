@@ -11,6 +11,7 @@ export interface PokemonType {
 
 export interface PokemonDetail extends PokemonListItem {
   id: number;
+  is_default: boolean;
   stats: {
     base_stat: number;
     effort: number;

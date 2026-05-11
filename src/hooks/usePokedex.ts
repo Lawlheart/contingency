@@ -82,11 +82,11 @@ export function usePokedex() {
       const pokemon: {species: string, detail: string}[] = await cachedPokemon.all();
       loadedPokemon = JSON.parse(pokemon[0].detail)
     } catch(e) {
-      console.error(e)
+      // console.error(e)
       console.log("Pokemon detail not cached, attempting to save")
 
       const request = await fetch(url)
-      const { id, name, stats, types, sprites, abilities } = await request.json()
+      const { id, name, stats, types, sprites, abilities, is_default } = await request.json()
 
       const newPokemonDetail: PokemonDetail = {
         id,
@@ -96,6 +96,7 @@ export function usePokedex() {
         sprites,
         url,
         abilities,
+        is_default,
       }
       console.log(newPokemonDetail)
       await savePokemon(newPokemonDetail)
