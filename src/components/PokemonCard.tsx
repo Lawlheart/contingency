@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import type { PokemonDetail } from "../types"
 import { PokedexContext } from "../context/pokedexContext"
-import { pokeTypes } from "../helpers/pokemonTypes"
+import PokemonCardIcon from "./PokemonTypeIcon"
 
 interface PokemonCardProps {
   pokemon: {
@@ -24,18 +24,7 @@ function PokemonCard({pokemon: { name }}: PokemonCardProps) {
       </div>
       <img src={detail?.sprites?.front_default} className="h-24" alt={`${name} Sprite`} title={name} />
       <div className="types flex">
-        {detail?.types.map(({type: {name}}) => {
-          const color = pokeTypes.find(pokeType => pokeType.name === name)
-
-          return <img
-            src={`https://bifrost.loreheart.com/projects/pokedex/icons/gen-9-types-white/${name}.png`}
-            key={name}
-            alt={`${name} type icon`}
-            title={`${name} type`}
-            className=""
-            style={{backgroundColor: color?.color}}
-          />
-        })}
+        {detail?.types.map(({type: {name}}) => <PokemonCardIcon key={name} typeName={name}></PokemonCardIcon>)}
       </div>
     </div>
   )

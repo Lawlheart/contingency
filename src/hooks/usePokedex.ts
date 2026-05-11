@@ -9,6 +9,7 @@ export function usePokedex() {
   const [pokedexPage, setPokedexPage] = useState<PokemonListItem[]>([])
   const [pagination, setPagination] = useState<PokemonPagination>()
   const [page, setPage] = useState<number>(1)
+  const [typeFilter, setTypeFilter] = useState('')
 
   // creates pokedexp page database table with Turso
   const initializePokedex = async (): Promise<PokemonPagination> => {
@@ -73,6 +74,9 @@ export function usePokedex() {
     return response
   }
 
+  // Checks for cached pokemon with Turso
+  // launches savePokemon if no cached entity exists
+  // Loads new or cached entity to Pokedex
   const loadPokemonDetail = async ({ name, url}: PokemonListItem) => {
     let loadedPokemon: PokemonDetail;
     try {
@@ -136,7 +140,7 @@ export function usePokedex() {
   // For pagination
   const loadPage = async (direction: 'previous' | 'next' | 'first' | 'last' | 'more') => {
     const lastPage = Math.ceil((pagination?.count || POKEAPI_CONFIG.dexLimit) / POKEAPI_CONFIG.pageSize)
-    let newPage = 1
+    let newPage
 
     switch (direction) {
       case 'previous':
@@ -167,6 +171,8 @@ export function usePokedex() {
     page,
     loadPage,
     pagination,
-    pokedex
+    pokedex,
+    typeFilter,
+    setTypeFilter,
   }
 }
